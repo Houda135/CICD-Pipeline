@@ -4,40 +4,55 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                echo 'Building...'
+                echo 'Stage 1: Build - Building the code using Maven...'
+                // Example tool: Maven
+                // Command: mvn clean package
             }
         }
         stage('Unit and Integration Tests') {
             steps {
-                echo 'Running Unit and Integration Tests...'
+                echo 'Stage 2: Unit and Integration Tests - Running unit and integration tests...'
+                // Example tools: JUnit for unit tests, TestNG for integration tests
+                // Commands: mvn test
             }
         }
         stage('Code Analysis') {
             steps {
-                echo 'Analyzing Code...'
+                echo 'Stage 3: Code Analysis - Analyzing the code for standards compliance...'
+                // Example tool: Checkstyle for code style checks, PMD for code quality
+                // Command: mvn checkstyle:check
             }
         }
         stage('Security Scan') {
             steps {
-                echo 'Performing Security Scan...'
+                echo 'Stage 4: Security Scan - Performing a security scan on the code...'
+                // Example tool: OWASP Dependency Check for vulnerability scanning
+                // Command: mvn dependency-check:check
             }
         }
         stage('Deploy to Staging') {
             steps {
-                echo 'Deploying to Staging...'
+                echo 'Stage 5: Deploy to Staging - Deploying the application to the staging server...'
+                // Example deployment target: AWS EC2, Docker, etc.
+                // Deployment commands would go here
             }
         }
         stage('Integration Tests on Staging') {
             steps {
-                echo 'Running Integration Tests on Staging...'
+                echo 'Stage 6: Integration Tests on Staging - Running integration tests on the staging environment...'
+                // Example tool: Selenium for automated UI tests
+                // Commands to run integration tests in staging
             }
         }
         stage('Deploy to Production') {
             steps {
-                echo 'Deploying to Production...'
+                echo 'Stage 7: Deploy to Production - Deploying the application to the production server...'
+                // Example deployment target: AWS EC2, Docker, etc.
+                // Deployment commands would go here
             }
         }
     }
+
     post {
         success {
             echo 'Pipeline succeeded'
