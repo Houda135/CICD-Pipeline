@@ -4,51 +4,79 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                echo 'Stage 1: Build - Building the code using Maven...'
-                // Example tool: Maven
-                // Command: mvn clean package
+                dir('CICD-Pipeline') {
+                    echo 'Building the code using Maven...'
+                    sh 'mvn clean package'
+                }
+            }
+            post {
+                success {
+                    mail to: "huda.uni@gmail.com",
+                         subject: "Build Status Email",
+                         body: "Build was successful"
+                }
             }
         }
+
         stage('Unit and Integration Tests') {
             steps {
-                echo 'Stage 2: Unit and Integration Tests - Running unit and integration tests...'
-                // Example tools: JUnit for unit tests, TestNG for integration tests
-                // Commands: mvn test
+                dir('CICD-Pipeline') {
+                    echo 'Running Unit and Integration Tests...'
+                    sh 'mvn test'
+                }
+            }
+            post {
+                success {
+                    mail to: "huda.uni@gmail.com",
+                         subject: "Test Status Email",
+                         body: "Tests were successful"
+                }
             }
         }
+
         stage('Code Analysis') {
             steps {
-                echo 'Stage 3: Code Analysis - Analyzing the code for standards compliance...'
-                // Example tool: Checkstyle for code style checks, PMD for code quality
-                // Command: mvn checkstyle:check
+                dir('CICD-Pipeline') {
+                    echo 'Analyzing code using Checkstyle...'
+                    sh 'mvn checkstyle:check'
+                }
             }
         }
+
         stage('Security Scan') {
             steps {
-                echo 'Stage 4: Security Scan - Performing a security scan on the code...'
-                // Example tool: OWASP Dependency Check for vulnerability scanning
-                // Command: mvn dependency-check:check
+                dir('CICD-Pipeline') {
+                    echo 'Running security scan using OWASP Dependency Check...'
+                    sh 'mvn org.owasp:dependency-check-maven:check'
+                }
+            }
+            post {
+                success {
+                    mail to: "huda.uni@gmail.com",
+                         subject: "Security Scan Status Email",
+                         body: "Security scan was successful"
+                }
             }
         }
+
         stage('Deploy to Staging') {
             steps {
-                echo 'Stage 5: Deploy to Staging - Deploying the application to the staging server...'
-                // Example deployment target: AWS EC2, Docker, etc.
-                // Deployment commands would go here
+                echo 'Deploying to Staging...'
+                sh 'scp target/my-app-1.0-SNAPSHOT.jar user@staging-server:/path/to/deploy/'
             }
         }
+
         stage('Integration Tests on Staging') {
             steps {
-                echo 'Stage 6: Integration Tests on Staging - Running integration tests on the staging environment...'
-                // Example tool: Selenium for automated UI tests
-                // Commands to run integration tests in staging
+                echo 'Running integration tests on Staging...'
+                sh 'mvn verify -Dtest=IntegrationTestSuite'
             }
         }
+
         stage('Deploy to Production') {
             steps {
-                echo 'Stage 7: Deploy to Production - Deploying the application to the production server...'
-                // Example deployment target: AWS EC2, Docker, etc.
-                // Deployment commands would go here
+                echo 'Deploying to Production...'
+                sh 'scp target/my-app-1.0-SNAPSHOT.jar user@production-server:/path/to/deploy/'
             }
         }
     }
