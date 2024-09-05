@@ -66,17 +66,29 @@ pipeline {
     post {
         success {
             echo 'Pipeline succeeded'
-            mail to: 'huda.uni@gmail.com',
-                     subject: "Jenkins Build Successful: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
-                     body: "Good news! The build for ${env.JOB_NAME} succeeded.\nCheck it out at: ${env.BUILD_URL}",
-                     attachLog: true
+            script {
+                // Save console log to a file
+                def logFile = "${env.WORKSPACE}/build.log"
+                writeFile file: logFile, text: currentBuild.rawBuild.getLog()
+
+                // Send email with log as attachment (using sendmail or mail command)
+                sh """
+                echo "Build succeeded!" | mail -s "Jenkins Build Successful: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}" -a ${logFile} huda.uni@gmail.com
+                """
+            }
         }
         failure {
             echo 'Pipeline failed'
-            mail to: 'huda.uni@gmail.com',
-                     subject: "Jenkins Build Failed: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
-                     body: "Unfortunately, the build for ${env.JOB_NAME} failed.\nCheck it out at: ${env.BUILD_URL}",
-                     attachLog: true
+            script {
+                // Save console log to a file
+                def logFile = "${env.WORKSPACE}/build.log"
+                writeFile file: logFile, text: currentBuild.rawBuild.getLog()
+
+                // Send email with log as attachment (using sendmail or mail command)
+                sh """
+                echo "Build failed!" | mail -s "Jenkins Build Failed: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}" -a ${logFile} huda.uni@gmail.com
+                """
+            }
         }
     }
 }
