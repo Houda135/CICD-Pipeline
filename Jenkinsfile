@@ -66,15 +66,17 @@ pipeline {
     post {
         success {
             echo 'Pipeline succeeded'
-            mail to: 'huda.uni@gmail.com',
-                 subject: "Jenkins Build Successful: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
-                 body: "Good news! The build for ${env.JOB_NAME} succeeded.\nCheck it out at: ${env.BUILD_URL}"
+            emailext to: 'huda.uni@gmail.com',
+                     subject: "Jenkins Build Successful: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
+                     body: "Good news! The build for ${env.JOB_NAME} succeeded.\nCheck it out at: ${env.BUILD_URL}",
+                     attachLog: true
         }
         failure {
             echo 'Pipeline failed'
-            mail to: 'huda.uni@gmail.com',
-                 subject: "Jenkins Build Failed: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
-                 body: "Unfortunately, the build for ${env.JOB_NAME} failed.\nCheck it out at: ${env.BUILD_URL}"
+            emailext to: 'huda.uni@gmail.com',
+                     subject: "Jenkins Build Failed: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
+                     body: "Unfortunately, the build for ${env.JOB_NAME} failed.\nCheck it out at: ${env.BUILD_URL}",
+                     attachLog: true
         }
     }
 }
