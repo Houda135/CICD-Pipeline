@@ -66,37 +66,23 @@ pipeline {
     post {
         success {
             echo 'Pipeline succeeded'
-            script {
-                // Save console log to a file
-                def logFile = "${env.WORKSPACE}/build.log"
-                writeFile file: logFile, text: currentBuild.rawBuild.getLog()
-
-                // Send email with log as attachment
-                emailext(
-                    to: 'huda.uni@gmail.com',
-                    subject: "Jenkins Build Successful: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
-                    body: "Build was successful. Please find the attached log file.",
-                    attachmentsPattern: logFile
-                )
-                echo 'Email sent successfully'
-            }
+            emailext(
+                to: 'huda.uni@gmail.com',
+                subject: "Jenkins Build Successful: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
+                body: "Build was successful. Check the build log.",
+                attachLog: true
+            )
+            echo 'Success email sent with log attached'
         }
         failure {
             echo 'Pipeline failed'
-            script {
-                // Save console log to a file
-                def logFile = "${env.WORKSPACE}/build.log"
-                writeFile file: logFile, text: currentBuild.rawBuild.getLog()
-
-                // Send email with log as attachment
-                emailext(
-                    to: 'huda.uni@gmail.com',
-                    subject: "Jenkins Build Failed: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
-                    body: "Build failed. Please find the attached log file.",
-                    attachmentsPattern: logFile
-                )
-                echo 'Email sent successfully'
-            }
+            emailext(
+                to: 'huda.uni@gmail.com',
+                subject: "Jenkins Build Failed: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
+                body: "Build failed. Check the build log.",
+                attachLog: true
+            )
+            echo 'Failure email sent with log attached'
         }
     }
 }
